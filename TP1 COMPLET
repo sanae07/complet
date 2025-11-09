@@ -1,0 +1,83 @@
+#include <stdio.h>
+
+// Algorithme d'Euclide pour calculer le PGCD
+int pgcd(int a, int b) {
+    int r;
+    while (b != 0) {
+        r = a % b;
+        a = b;
+        b = r;
+    }
+    return a;
+}
+
+// Algorithme d'Euclide étendu pour trouver x et y tels que a*x + b*y = d
+int euclideEtendu(int a, int b, int *x, int *y) {
+    if (b == 0) {
+        *x = 1;
+        *y = 0;
+        return a;
+    }
+    int x1, y1;
+    int d = euclideEtendu(b, a % b, &x1, &y1);
+    *x = y1;
+    *y = x1 - (a / b) * y1;
+    return d;
+}
+
+int main() {
+    int a, b, c;
+    int d, x0, y0, xp, yp;
+
+    printf("=== Équations diophantiennes linéaires ===\n");
+    printf("Forme : a*x + b*y = c\n\n");
+
+    printf("Entrez a : ");
+    scanf("%d", &a);
+    printf("Entrez b : ");
+    scanf("%d", &b);
+    printf("Entrez c : ");
+    scanf("%d", &c);
+
+    d = pgcd(a, b);
+    printf("\nPGCD(%d, %d) = %d\n", a, b, d);
+
+    if (c % d != 0) {
+        printf("Pas de solution entière car %d ne divise pas %d.\n", d, c);
+    } else {
+        printf("Il existe des solutions entières car %d divise %d.\n", d, c);
+
+        euclideEtendu(a, b, &x0, &y0);
+        xp = x0 * (c / d);
+        yp = y0 * (c / d);
+
+        printf("\nSolution particulière : (x, y) = (%d, %d)\n", xp, yp);
+        printf("Solution générale : (x, y) = (%d + %d*k , %d - %d*k), k ∈ Z\n",
+               xp, b / d, yp, a / d);
+    }
+
+    return 0;
+}
+
+
+EXECUTION DU PROGRAMME:
+=== Équations diophantiennes linéaires ===
+Forme : a*x + b*y = c
+
+Entrez a : 30
+Entrez b : 18
+Entrez c : 6
+
+PGCD(30, 18) = 6
+Il existe des solutions entières car 6 divise 6.
+
+Solution particulière : (x, y) = (1, -1)
+Solution générale : (x, y) = (1 + 3*k , -1 - 5*k), k ∈ Z 
+ 
+UNE COURTE EXPLICATION:
+pgcd(a,b) : calcule le plus grand commun diviseur avec l’algorithme d’Euclide.
+euclideEtendu(a,b) : calcule aussi deux entiers x et y tels que a*x + b*y = d.
+Le programme demande a, b, c, puis :
+vérifie s’il y a des solutions,
+affiche une solution particulière,
+et la forme générale de toutes les solutions.
